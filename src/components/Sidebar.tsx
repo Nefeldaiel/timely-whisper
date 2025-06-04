@@ -26,7 +26,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
   const menuItems = [
     { icon: <IoMdMail className="w-5 h-5" />, label: 'Inbox', href: '/list' },
-    { icon: <IoPersonOutline className="w-5 h-5" />, label: 'Contact', href: '#' },
+    { icon: <IoPersonOutline className="w-5 h-5" />, label: 'Contact', href: '/contact' },
     { icon: <IoSettingsOutline className="w-5 h-5" />, label: 'Setting', href: '/setting' },
   ];
 
