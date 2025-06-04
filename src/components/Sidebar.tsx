@@ -7,6 +7,8 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import Image from 'next/image';
 import { useIsMobile } from '@/hooks/useIsMobile';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -16,15 +18,16 @@ interface SidebarProps {
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const isMobile = useIsMobile();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     setIsCollapsed(isMobile);
   }, [isMobile]);
 
   const menuItems = [
-    { icon: <IoMdMail className="w-5 h-5" />, label: 'Inbox', href: '#' },
+    { icon: <IoMdMail className="w-5 h-5" />, label: 'Inbox', href: '/list' },
     { icon: <IoPersonOutline className="w-5 h-5" />, label: 'Contact', href: '#' },
-    { icon: <IoSettingsOutline className="w-5 h-5" />, label: 'Setting', href: '#' },
+    { icon: <IoSettingsOutline className="w-5 h-5" />, label: 'Setting', href: '/setting' },
   ];
 
   return (
@@ -80,19 +83,25 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         {/* Navigation */}
         <nav className="mt-2 px-2">
           {menuItems.map((item, index) => (
-            <a
+            <Link
               key={index}
               href={item.href}
               onClick={() => isMobile && onClose()}
-              className="flex items-center px-4 py-3 my-1 rounded-lg text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-colors"
+              className={`flex items-center px-4 py-3 my-1 rounded-lg transition-colors ${
+                pathname === item.href
+                  ? 'bg-blue-50 text-blue-600'
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+              }`}
             >
-              <span className="flex items-center justify-center text-gray-400 group-hover:text-gray-600">
+              <span className={`flex items-center justify-center ${
+                pathname === item.href ? 'text-blue-600' : 'text-gray-400 group-hover:text-gray-600'
+              }`}>
                 {item.icon}
               </span>
               {!isCollapsed && (
                 <span className="ml-4 font-medium">{item.label}</span>
               )}
-            </a>
+            </Link>
           ))}
         </nav>
       </div>

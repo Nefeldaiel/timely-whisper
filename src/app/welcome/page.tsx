@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { APP_NAME, APP_DESCRIPTION, APP_TAGLINE } from '@/constants/app';
 
 export default function WelcomePage() {
   return (
@@ -36,7 +37,7 @@ export default function WelcomePage() {
           transition={{ delay: 0.4, duration: 0.5 }}
           className="text-4xl md:text-5xl font-bold text-gray-800 mb-6"
         >
-          Welcome to Letter Management
+          Welcome to {APP_NAME}
         </motion.h1>
 
         {/* Description */}
@@ -46,9 +47,7 @@ export default function WelcomePage() {
           transition={{ delay: 0.6, duration: 0.5 }}
           className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto mb-12 leading-relaxed"
         >
-          Your personal space for organizing and managing correspondence. 
-          Experience a clean, intuitive interface designed to make letter 
-          management effortless and enjoyable.
+          {APP_DESCRIPTION} {APP_TAGLINE}
         </motion.p>
 
         {/* CTA Button */}
