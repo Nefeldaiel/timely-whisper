@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Inter } from "next/font/google";
 import { APP_NAME } from "@/constants/app";
+import { UserProvider } from '@/context/UserContext';
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,8 +28,6 @@ export const metadata: Metadata = {
 // Create a client wrapper component
 function ClientLayout({ children }: { children: React.ReactNode }) {
   'use client';
-  
-  const { UserProvider } = require('@/context/UserContext');
   return <UserProvider>{children}</UserProvider>;
 }
 

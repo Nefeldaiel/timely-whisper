@@ -20,7 +20,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const isMobile = useIsMobile();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
-  const { user, isLoading } = useUser();
+  const { user } = useUser();
 
   useEffect(() => {
     // Only collapse on desktop
