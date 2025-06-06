@@ -3,45 +3,20 @@
 import { useState } from 'react';
 import { IoStarOutline, IoStar } from 'react-icons/io5';
 import Image from 'next/image';
-
-interface Contact {
-  id: number;
-  name: string;
-  email: string;
-  avatarSeed: string;
-  isFavorite: boolean;
-}
+import { useUser } from '@/context/UserContext';
 
 interface ContactListProps {
   onMenuClick: () => void;
 }
 
-const sampleContacts: Contact[] = [
-  { id: 1, name: "Emma Thompson", email: "emma.t@example.com", avatarSeed: "emma", isFavorite: true },
-  { id: 2, name: "James Wilson", email: "james.w@example.com", avatarSeed: "james", isFavorite: false },
-  { id: 3, name: "Sophia Chen", email: "sophia.c@example.com", avatarSeed: "sophia", isFavorite: true },
-  { id: 4, name: "Lucas Rodriguez", email: "lucas.r@example.com", avatarSeed: "lucas", isFavorite: false },
-  { id: 5, name: "Olivia Kim", email: "olivia.k@example.com", avatarSeed: "olivia", isFavorite: false },
-];
-
 export function ContactList({ onMenuClick }: ContactListProps) {
-  const [contacts, setContacts] = useState<Contact[]>(sampleContacts);
+  const { user, toggleContactFavorite, isLoading } = useUser();
   const [searchQuery, setSearchQuery] = useState('');
 
-  const toggleFavorite = (contactId: number) => {
-    setContacts(prevContacts =>
-      prevContacts.map(contact =>
-        contact.id === contactId
-          ? { ...contact, isFavorite: !contact.isFavorite }
-          : contact
-      )
-    );
-  };
-
-  const filteredContacts = contacts.filter(contact =>
+  const filteredContacts = user?.contacts.filter(contact =>
     contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     contact.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  ) || [];
 
   const sortedContacts = [...filteredContacts].sort((a, b) => {
     // Sort by favorite status first
@@ -51,6 +26,22 @@ export function ContactList({ onMenuClick }: ContactListProps) {
     // Then sort by name
     return a.name.localeCompare(b.name);
   });
+
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-4xl mx-auto">
+        <div className="animate-pulse">
+          <div className="h-8 w-32 bg-gray-200 rounded mb-8"></div>
+          <div className="h-12 w-full bg-gray-200 rounded mb-6"></div>
+          <div className="space-y-4">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="h-20 w-full bg-gray-200 rounded"></div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-4xl mx-auto">
@@ -140,7 +131,7 @@ export function ContactList({ onMenuClick }: ContactListProps) {
 
                 {/* Favorite button */}
                 <button
-                  onClick={() => toggleFavorite(contact.id)}
+                  onClick={() => toggleContactFavorite(contact.id)}
                   className="p-2 rounded-full hover:bg-gray-100 transition-colors"
                   aria-label={contact.isFavorite ? "Remove from favorites" : "Add to favorites"}
                 >

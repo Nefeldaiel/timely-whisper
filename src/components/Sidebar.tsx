@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useUser } from '@/context/UserContext';
 
 interface SidebarProps {
   isOpen: boolean;
@@ -19,9 +20,11 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const isMobile = useIsMobile();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const pathname = usePathname();
+  const { user, isLoading } = useUser();
 
   useEffect(() => {
-    setIsCollapsed(isMobile);
+    // Only collapse on desktop
+    setIsCollapsed(false);
   }, [isMobile]);
 
   const menuItems = [
@@ -29,6 +32,9 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
     { icon: <IoPersonOutline className="w-5 h-5" />, label: 'Contact', href: '/contact' },
     { icon: <IoSettingsOutline className="w-5 h-5" />, label: 'Setting', href: '/setting' },
   ];
+
+  // Determine if sidebar should be collapsed (only on desktop)
+  const shouldCollapse = !isMobile && isCollapsed;
 
   return (
     <>
@@ -43,24 +49,26 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Sidebar */}
       <div 
         className={`fixed md:static inset-y-0 left-0 z-50 bg-white/70 backdrop-blur-sm min-h-screen transition-all duration-300 border-r border-gray-100 shadow-sm ${
-          isCollapsed ? 'w-20' : 'w-64'
+          shouldCollapse ? 'w-20' : 'w-64'
         } ${isOpen || !isMobile ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
         {/* Account Section */}
         <div className="p-6 border-b border-gray-50">
-          <div className={`flex ${isCollapsed ? 'justify-center' : 'items-center gap-4'}`}>
-            <div className={`relative ${isCollapsed ? 'w-10 h-10' : 'w-12 h-12'} shadow-sm rounded-full overflow-hidden`}>
-              <Image
-                src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix"
-                alt="Account avatar"
-                fill
-                className="rounded-full"
-              />
+          <div className={`flex ${shouldCollapse ? 'justify-center' : 'items-center gap-4'}`}>
+            <div className={`relative ${shouldCollapse ? 'w-10 h-10' : 'w-12 h-12'} shadow-sm rounded-full overflow-hidden`}>
+              {user && (
+                <Image
+                  src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.avatarSeed}`}
+                  alt="Account avatar"
+                  fill
+                  className="rounded-full"
+                />
+              )}
             </div>
-            {!isCollapsed && (
+            {!shouldCollapse && user && (
               <div>
-                <h3 className="font-medium text-gray-700">John Doe</h3>
-                <p className="text-sm text-gray-400">john@example.com</p>
+                <h3 className="font-medium text-gray-700">{user.name}</h3>
+                <p className="text-sm text-gray-400">{user.email}</p>
               </div>
             )}
           </div>
@@ -72,7 +80,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="p-2 rounded-full hover:bg-gray-50 text-gray-400 hover:text-gray-600 transition-colors"
           >
-            {isCollapsed ? (
+            {shouldCollapse ? (
               <IoChevronForward className="w-4 h-4" />
             ) : (
               <IoChevronBack className="w-4 h-4" />
@@ -98,7 +106,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
               }`}>
                 {item.icon}
               </span>
-              {!isCollapsed && (
+              {!shouldCollapse && (
                 <span className="ml-4 font-medium">{item.label}</span>
               )}
             </Link>

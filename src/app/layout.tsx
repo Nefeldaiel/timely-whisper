@@ -24,6 +24,14 @@ export const metadata: Metadata = {
   description: "A comfortable letter management system",
 };
 
+// Create a client wrapper component
+function ClientLayout({ children }: { children: React.ReactNode }) {
+  'use client';
+  
+  const { UserProvider } = require('@/context/UserContext');
+  return <UserProvider>{children}</UserProvider>;
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -31,7 +39,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${inter.className} antialiased bg-[#F8FAFC]`}>
-      <body>{children}</body>
+      <body>
+        <ClientLayout>
+          {children}
+        </ClientLayout>
+      </body>
     </html>
   );
 }

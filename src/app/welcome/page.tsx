@@ -57,7 +57,7 @@ export default function WelcomePage() {
           transition={{ delay: 0.8, duration: 0.5 }}
         >
           <Link 
-            href="/list"
+            href="/login"
             className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-lg md:text-xl font-medium px-12 py-4 rounded-full shadow-lg hover:shadow-xl transform transition-all duration-200 hover:-translate-y-1"
           >
             Start Journey
